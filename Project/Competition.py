@@ -1,43 +1,44 @@
+#FA
+#یک مسابقه‌ی اسب‌دوانی متنی است. چهار اسب از صفر شروع می‌کنند و در هر دور هر کدام بین ۱ تا ۴ واحد جلو می‌روند.
+#موقعیت هر اسب با فاصله‌ها و شکل |==|<- چاپ می‌شود و خط پایان با | نشان داده می‌شود. وقتی اسبی از ۲۷ رد شود، حلقه تمام می‌شود و برنده اعلام می‌شود.
+#EN
+#A text-based horse race. Four horses start at 0 and each advances 1-4 units per round. Each horse’s position is drawn with
+#spaces and the |==|<- sprite, with | marking the finish line. When a horse passes 27, the loop ends and a winner is announced.
+
 import random
-def Competition():
+import time
 
-    Horses = {
-    "Horse_1": 0,
-    "Horse_2": 0,
-    "Horse_3": 0,
-    "Horse_4": 0
-    }
+FINISH = 27
+HORSE = "|==|->"
 
-    Horse = "|==|->"
-    RunA = " "
-    counter = 10
 
-    flag = True
-    winner_name = None
+def draw(name, pos):
+    pos = min(pos, FINISH)
+    track = f"{pos}" + " " * (pos - 1) + HORSE
+    track = track.ljust(FINISH)[:FINISH] + "|"
+    return f"{name:<8} {track}"
 
-    while flag:
-        for key in Horses:
-            Horses[key] += random.randint(1, 4)
-            if Horses[key] > 27:
-                flag = False
-                winner_name = key
 
-        for key in Horses:
-            s = str(Horses[key]) + (RunA * (Horses[key]-1)) + Horse
-            c = 27 - len(s) # -> 5
-            if c > 0:
-                s += (" " * (c-1)) + "|"
+def competition():
+    horses = {f"Horse_{i}": 0 for i in range(1, 5)}
 
-            elif c < 0:
-                lst = list(s)
-                lst[27] = "|"
-                s = "".join(lst)
+    while True:
+        for name in horses:
+            horses[name] += random.randint(1, 4)
 
-            print(s)
-        print("\n= = = = = = = = = = = = = =\n")
-    print(f"Hurray, {winner_name.capitalize()} win!!")
+        for name, pos in horses.items():
+            print(draw(name, pos))
+        print("\n" + "= " * 14 + "\n")
 
-Competition()
+        leader = max(horses, key=horses.get)
+        if horses[leader] >= FINISH:
+            break
+        time.sleep(0.4)
+
+    print(f"Hurray, {leader.replace('_', ' ')} wins!!")
+
+
+competition()
 
 #  ______________
 # < I'm horse... >

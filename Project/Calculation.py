@@ -1,28 +1,40 @@
+#FA
+#یک بازی ریاضی ساده است. دو عدد تصادفی بین ۱ تا ۹ و یک عملگر تصادفی (+، - یا *) انتخاب می‌کند و مثلاً
+#این عدد 7 * 3 نشان می‌دهد کاربر جواب را وارد می‌کند. اگر درست بود ✅✅✅✅ و اگر غلط بود ❌❌❌❌ چاپ می‌شود.
+#EN
+#A simple math quiz. It picks two random numbers (1-9) and a random operator (+, -, *), shows
+#something like 7 * 3, and asks for the answer. A correct answer prints ✅✅✅✅, a wrong one prints ❌❌❌❌.
+
+import operator
 import random
 
-def Calculation():
-    Result1 = 0
-    Result2 = 0
-    Result3 = 0
-    Operator = ['+','-','*']
-    Number1 = int(random.randint(1,9))
-    Input0 = random.choice(Operator)
-    Number2 = int(random.randint(1,9))
-    print (Number1,Input0,Number2)
-    Result0 = int (input('  = '))
-    Result1 = Result0
+OPERATORS = {
+    '+': operator.add,
+    '-': operator.sub,
+    '*': operator.mul,
+}
 
-    Output1 = Number1 - Number2
-    Result2 = Number1 + Number2
-    Output3 = Number1 * Number2
 
-    if Input0 == '+' and Result1 == Result2:
-        print('✅✅✅✅')
-    elif Input0 == '-' and Result1 == Output1:
-        print('✅✅✅✅')
-    elif Input0 == '*' and Result1 == Output3:
+def read_answer():
+    while True:
+        try:
+            return int(input('  = '))
+        except ValueError:
+            print('  Please enter a whole number.')
+
+
+def calculation():
+    a = random.randint(1, 9)
+    b = random.randint(1, 9)
+    symbol = random.choice(list(OPERATORS))
+
+    print(a, symbol, b)
+    answer = read_answer()
+
+    if answer == OPERATORS[symbol](a, b):
         print('✅✅✅✅')
     else:
         print('❌❌❌❌')
 
-Calculation()
+
+calculation()

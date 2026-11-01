@@ -1,59 +1,76 @@
+#EN
+#A guessing game: human vs bot. The human guesses the computer’s random number (1-99) with ↑/↓ hints.
+#Then the user types a secret number and the bot finds it using random guesses within a shrinking range. Fewer guesses wins.
+
 import random
+import getpass
 
-def Game_Guess():
+LOW, HIGH = 1, 99
 
-    def Human():
-        print('Turn HUMAN')
-        C_H = 0
-        R = random.randint(1,99)
-        int(R)
-        print('----------------------------')
-        while True:
-            Num = int(input('Enter your guess: '))
-            C_H += 1
-            if Num == R:
-                print(' !!!You Win!!! ')
-                break
-            elif R < Num:
-                print('↓↓↓↓↓↓')
-            elif R > Num:
-                print('↑↑↑↑↑↑')
-        print("Number of human guess:", C_H)
-        return C_H
 
-    def Bot():
-        print('')
-        print('Turn BOT')
-        C_B = 0
-        Num = int(input('Enter yor number: '))
-        Max_R = 99
-        Min_R = 1
-        print('----------------------------')
-        while True:
-            R=random.randint(Min_R,Max_R)
-            C_B += 1
-            print('Guess: ',R)
-            if R > Num:
-                Max_R = R
-            elif R < Num:
-                Min_R = R
-            elif R == Num:
-                print('Oh OMG You Win!!!!!!')
-                break
-        print("Number of bot guess:", C_B)
-        return C_B
+def read_int(prompt, low=LOW, high=HIGH):
+    while True:
+        try:
+            value = int(prompt and input(prompt))
+            if low <= value <= high:
+                return value
+        except ValueError:
+            pass
+        print(f'Please enter a whole number between {low} and {high}.')
 
-    Turns_Human = Human()
-    Turns_Bot = Bot()
-    print('')
-    print("Number of bot guess:", Turns_Bot)
-    print("Number of human guess:", Turns_Human)
-    print('')
-    if Turns_Human < Turns_Bot:
-        print('!!!! Win Human !!!!')
-    elif Turns_Human > Turns_Bot:
-        print('#### Win Bot ####')
+
+def human_turn():
+    print('Turn HUMAN')
+    secret = random.randint(LOW, HIGH)
+    tries = 0
+    print('-' * 28)
+
+    while True:
+        guess = read_int('Enter your guess: ')
+        tries += 1
+        if guess == secret:
+            print(' !!! You Win !!! ')
+            break
+        print('↓↓↓↓↓↓' if guess > secret else '↑↑↑↑↑↑')
+
+    print('Number of human guesses:', tries)
+    return tries
+
+
+def bot_turn():
+    print('\nTurn BOT')
+    secret = read_int(f'Enter your secret number ({LOW}-{HIGH}): ')
+    low, high = LOW, HIGH
+    tries = 0
+    print('-' * 28)
+
+    while True:
+        guess = (low + high) // 2        # binary search
+        tries += 1
+        print('Guess:', guess)
+        if guess == secret:
+            print('The bot wins this round!')
+            break
+        if guess > secret:
+            high = guess - 1
+        else:
+            low = guess + 1
+
+    print('Number of bot guesses:', tries)
+    return tries
+
+
+def game_guess():
+    human = human_turn()
+    bot = bot_turn()
+
+    print(f'\nHuman: {human} guesses | Bot: {bot} guesses\n')
+    if human < bot:
+        print('!!!! Human wins !!!!')
+    elif human > bot:
+        print('#### Bot wins ####')
     else:
-        print('@#$# WTF !$#@@')
+        print('It\'s a tie!')
 
-Game_Guess()
+
+game_guess()
