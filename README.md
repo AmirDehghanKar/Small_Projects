@@ -183,6 +183,6 @@ python -m pip install requests kavenegar
 
 <div align="center">
 
-Made with ❤️ and Python · ساخته‌شده با ❤️ و پایتون
+Made with Love❤️
 
 </div>
